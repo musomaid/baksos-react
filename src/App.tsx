@@ -1,3 +1,22 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import DashboardPage from './pages/DashboardPage';import PatientsPage from './pages/PatientsPage';import PatientFormPage from './pages/PatientFormPage';import PatientDetailPage from './pages/PatientDetailPage';import ServicesPage from './pages/ServicesPage';import VisitDetailPage from './pages/VisitDetailPage';import TriageFormPage from './pages/TriageFormPage';import MedicalFormPage from './pages/MedicalFormPage';import PharmacyPage from './pages/PharmacyPage';import ReferralsPage from './pages/ReferralsPage';import DocumentsPage from './pages/DocumentsPage';import ReportsPage from './pages/ReportsPage';import SettingsPage from './pages/SettingsPage';
-export default function App(){return <BrowserRouter><Routes><Route path='/' element={<DashboardPage/>}/><Route path='/patients' element={<PatientsPage/>}/><Route path='/patients/new' element={<PatientFormPage/>}/><Route path='/patients/:id' element={<PatientDetailPage/>}/><Route path='/services' element={<ServicesPage/>}/><Route path='/visits/:id' element={<VisitDetailPage/>}/><Route path='/visits/:id/triage' element={<TriageFormPage/>}/><Route path='/visits/:id/medical' element={<MedicalFormPage/>}/><Route path='/pharmacy' element={<PharmacyPage/>}/><Route path='/referrals' element={<ReferralsPage/>}/><Route path='/documents' element={<DocumentsPage/>}/><Route path='/reports' element={<ReportsPage/>}/><Route path='/settings' element={<SettingsPage/>}/></Routes></BrowserRouter>}
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import PatientsPage from './pages/PatientsPage';
+import PatientFormPage from './pages/PatientFormPage';
+import PatientDetailPage from './pages/PatientDetailPage';
+import SchedulePage from './pages/SchedulePage';
+import MonitoringPage from './pages/MonitoringPage';
+import TreatmentPage from './pages/TreatmentPage';
+import NotesPage from './pages/NotesPage';
+import AIAssistantPage from './pages/AIAssistantPage';
+import ReportsPage from './pages/ReportsPage';
+import DocumentsPage from './pages/DocumentsPage';
+import SettingsPage from './pages/SettingsPage';
+import AuditLogsPage from './pages/AuditLogsPage';
+
+export default function App(){return <BrowserRouter><Routes>
+<Route path='/' element={<Navigate to='/login' replace />} />
+<Route path='/login' element={<LoginPage/>}/><Route path='/dashboard' element={<DashboardPage/>}/>
+<Route path='/patients' element={<PatientsPage/>}/><Route path='/patients/new' element={<PatientFormPage/>}/><Route path='/patients/:id' element={<PatientDetailPage/>}/><Route path='/patients/:id/edit' element={<PatientFormPage/>}/>
+<Route path='/schedule' element={<SchedulePage/>}/><Route path='/monitoring' element={<MonitoringPage/>}/><Route path='/treatment' element={<TreatmentPage/>}/><Route path='/notes' element={<NotesPage/>}/><Route path='/ai-assistant' element={<AIAssistantPage/>}/><Route path='/reports' element={<ReportsPage/>}/><Route path='/documents' element={<DocumentsPage/>}/><Route path='/settings' element={<SettingsPage/>}/><Route path='/audit-logs' element={<AuditLogsPage/>}/>
+</Routes></BrowserRouter>}

@@ -1,2 +1,2 @@
-import { AppShell } from '../components/AppShell';
-export default function SettingsPage(){return <AppShell title='Settings'>Halaman Settings</AppShell>}
+import AppShell from '../components/AppShell';import { loadAppData } from '../lib/storage';
+export default function Page(){const data=loadAppData();return <AppShell title='Settings' desc='Antarmuka modern dan responsif RADCARE NUSANTARA'><div className='grid gap-4 md:grid-cols-2 xl:grid-cols-4'>{[1,2,3,4].map(i=><div key={i} className='rounded-3xl border bg-white p-5 shadow-sm'><p className='text-sm text-slate-500'>KPI {i}</p><p className='text-3xl font-bold text-blue-600'>{data.patients.length+i}</p></div>)}</div><div className='rounded-3xl border bg-white p-5 shadow-sm'><p className='font-semibold'>Konten halaman Settings</p><p className='text-sm text-slate-600'>Data tersimpan di localStorage dengan key radcare_nusantara_app_data.</p></div></AppShell>}

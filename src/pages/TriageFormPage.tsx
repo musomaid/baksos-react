@@ -1,2 +1,0 @@
-import { useParams,useNavigate } from 'react-router-dom';import { AppShell } from '../components/AppShell';import { useAppStore } from '../stores/appStore';
-export default function TriageFormPage(){const {id=''}=useParams();const nav=useNavigate();const up=useAppStore(s=>s.updateVisitStatus);return <AppShell title='Triage'><input className='w-full border rounded p-2' placeholder='Tekanan darah'/><button className='w-full mt-3 bg-blue-600 text-white p-3 rounded-xl' onClick={()=>{up(id,'Pemeriksaan');nav(`/visits/${id}/medical`);}}>Simpan Triage</button></AppShell>}
