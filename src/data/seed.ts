@@ -1,7 +1,24 @@
-import type { AppData } from '../types';
-import { nextQueue } from '../lib/id';
-const now=new Date().toISOString();
-export const seedData=():AppData=>{const patients=Array.from({length:10},(_,i)=>({id:`p${i+1}`,name:`Pasien ${i+1}`,age:20+i,gender:i%2?'P':'L',address:'Lokasi Baksos',chiefComplaint:'Keluhan umum',category:i%4===0?'Lansia':'Umum'}));
-const statuses=['Menunggu','Triage','Pemeriksaan','Farmasi','Selesai','Menunggu','Pemeriksaan','Farmasi'] as const;
-const visits=statuses.map((s,i)=>({id:`v${i+1}`,patientId:patients[i].id,queueNumber:nextQueue(i+1),priority:i===0?'Darurat':i%3===0?'Lansia':'Normal',status:s,createdAt:now}));
-return {activity:{id:'a1',name:'Baksos Pengobatan Dukkes',location:'Lapangan Desa Sehat',date:now.slice(0,10),personInCharge:'dr. Sinta',isActive:true},patients,visits,triageRecords:visits.slice(0,3).map((v,i)=>({id:`t${i}`,visitId:v.id,bloodPressure:'120/80',temperature:36.5,pulse:80,respiration:18,oxygenSaturation:98,weight:55+i,notes:'stabil'})),medicalRecords:visits.slice(0,3).map((v,i)=>({id:`m${i}`,visitId:v.id,anamnesis:'-',physicalExam:'-',diagnosis:['ISPA','Dispepsia','Hipertensi'][i],action:'Terapi simptomatik',doctorNotes:'Kontrol'})),medicines:Array.from({length:10},(_,i)=>({id:`med${i}`,name:`Obat ${i+1}`,type:'Tablet',unit:'strip',stock:i<3?2:10+i,criticalStock:5,defaultInstruction:'3x1 setelah makan'})),prescriptions:[],prescriptionItems:[],referrals:[{id:'r1',visitId:'v2',facility:'RSUD A',reason:'butuh observasi',diagnosis:'demam tinggi',notes:'-',status:'baru'},{id:'r2',visitId:'v4',facility:'Puskesmas B',reason:'kontrol lanjutan',diagnosis:'HT',notes:'-',status:'selesai'}],documents:[],teamMembers:[{id:'tm1',name:'Admin 1',role:'Admin',phone:'08',email:'a@x.com'},{id:'tm2',name:'dr. Budi',role:'Dokter',phone:'08',email:'d@x.com'},{id:'tm3',name:'Ners Ani',role:'Perawat',phone:'08',email:'p@x.com'},{id:'tm4',name:'Farma Rina',role:'Farmasi',phone:'08',email:'f@x.com'},{id:'tm5',name:'Relawan Edo',role:'Relawan',phone:'08',email:'r@x.com'}],auditLogs:[]};}
+import type { AppData, Patient } from '../types';
+const mkPatient = (i:number): Patient => ({
+  id:`p-${i}`,
+  patientId:`RCN-${String(1000+i)}`,
+  name:['Andi Pratama','Siti Rahma','Budi Santoso','Nadia Putri','Rizky Hidayat','Citra Lestari','Dewi Anggraini','Fajar Nugroho','Maya Salsabila','Yusuf Maulana','Rina Oktavia','Hendra Wijaya'][i-1],
+  age:28+i,gender:i%2?'L':'P',diagnosis:'Karsinoma',cancerType:['Payudara','Paru','Nasofaring'][i%3],stage:['IIA','IIB','IIIA'][i%3],doctorName:['dr. Arif','dr. Lani','dr. Putra'][i%3],
+  status:i%4===0?'Tertunda':i%5===0?'Selesai':'Aktif',riskLevel:i%4===0?'Tinggi':i%3===0?'Sedang':'Rendah',totalSessions:25,completedSessions:Math.min(25, i+8),treatmentProgress:Math.min(100,Math.round(((i+8)/25)*100)),nextSchedule:new Date(Date.now()+i*86400000).toISOString(),createdAt:new Date(Date.now()-i*86400000).toISOString(),
+});
+
+export const seedData = (): AppData => ({
+  patients: Array.from({length:12},(_,i)=>mkPatient(i+1)),
+  users: Array.from({length:8},(_,i)=>({id:`u-${i+1}`,name:`User ${i+1}`})),
+  schedules: Array.from({length:15},(_,i)=>({id:`sc-${i+1}`,patientId:`p-${(i%12)+1}`,status:i%4===0?'Ditunda':'Terjadwal',date:new Date(Date.now()+i*3600000).toISOString()})),
+  treatmentPlans: [], treatmentSessions: Array.from({length:12},(_,i)=>({id:`ts-${i+1}`,patientId:`p-${(i%12)+1}`,status:i%3===0?'Selesai':'Berjalan'})),
+  monitoringNotes: Array.from({length:10},(_,i)=>({id:`mn-${i+1}`,patientId:`p-${(i%12)+1}`,note:'Monitoring stabil'})),
+  doctorNotes: Array.from({length:8},(_,i)=>({id:`dn-${i+1}`,patientId:`p-${(i%12)+1}`,note:'Review dokter'})),
+  physicsNotes: Array.from({length:5},(_,i)=>({id:`pn-${i+1}`,patientId:`p-${(i%12)+1}`,note:'Validasi dosis'})),
+  sideEffects: Array.from({length:7},(_,i)=>({id:`se-${i+1}`,patientId:`p-${(i%12)+1}`,severity:i%3===0?'Berat':'Ringan'})),
+  documents: Array.from({length:6},(_,i)=>({id:`doc-${i+1}`,title:`Dokumen ${i+1}`})),
+  reports: [],
+  auditLogs: Array.from({length:10},(_,i)=>({id:`log-${i+1}`,date:new Date(Date.now()-i*3600000).toISOString(),role:'System',action:'Seed Data',entity:'system',description:'Inisialisasi data demo'})),
+  aiInsights: Array.from({length:5},(_,i)=>({id:`ai-${i+1}`,title:`Insight ${i+1}`,summary:'Perlu evaluasi pasien risiko tinggi.'})),
+  settings: { facilityName: 'RADCARE NUSANTARA', location: 'Jakarta', themePreference: 'light' },
+});
