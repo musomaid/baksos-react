@@ -1,0 +1,10 @@
+import { seedData } from '../data/seed';
+import { downloadFile } from './csv';
+import type { AppData } from '../types';
+const KEY='baksos_dukkes_app_data';
+export const loadAppData=():AppData=>{const raw=localStorage.getItem(KEY);if(!raw){const d=seedData();saveAppData(d);return d;}return JSON.parse(raw)};
+export const saveAppData=(data:AppData)=>localStorage.setItem(KEY,JSON.stringify(data));
+export const resetAppData=()=>{const d=seedData();saveAppData(d);return d};
+export const exportToJSON=(data:AppData)=>downloadFile('baksos-data.json',JSON.stringify(data,null,2),'application/json');
+export const importFromJSON=(file:File)=>new Promise<AppData>((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(JSON.parse(String(fr.result)));fr.onerror=()=>rej(fr.error);fr.readAsText(file);});
+export const exportToCSV=(data:AppData)=>{const rows=['type,id,name,status'];data.patients.forEach(p=>rows.push(`patient,${p.id},${p.name},-`));data.visits.forEach(v=>rows.push(`visit,${v.id},${v.queueNumber},${v.status}`));downloadFile('baksos-report.csv',rows.join('\n'),'text/csv')};
