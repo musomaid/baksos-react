@@ -1,0 +1,7 @@
+import { create } from 'zustand';
+import type { AppData, Patient, VisitStatus } from '../types';
+import { loadAppData, saveAppData, resetAppData } from '../lib/storage';
+import { nextQueue, uid } from '../lib/id';
+
+type S={data:AppData;reload:()=>void;addPatient:(p:Omit<Patient,'id'>,priority:any)=>string;updateVisitStatus:(visitId:string,status:VisitStatus)=>void;replaceData:(d:AppData)=>void;reset:()=>void};
+export const useAppStore=create<S>((set,get)=>({data:loadAppData(),reload:()=>set({data:loadAppData()}),replaceData:(d)=>{saveAppData(d);set({data:d});},reset:()=>set({data:resetAppData()}),addPatient:(p,priority)=>{const data=get().data;const patient={...p,id:uid('p')};const visit={id:uid('v'),patientId:patient.id,queueNumber:nextQueue(data.visits.length+1),priority,status:'Menunggu' as VisitStatus,createdAt:new Date().toISOString()};const n={...data,patients:[...data.patients,patient],visits:[...data.visits,visit],auditLogs:[...data.auditLogs,{id:uid('log'),action:'tambah pasien',timestamp:new Date().toISOString(),details:patient.name}]};saveAppData(n);set({data:n});return visit.id;},updateVisitStatus:(visitId,status)=>{const data=get().data;const visits=data.visits.map(v=>v.id===visitId?{...v,status}:v);const n={...data,visits,auditLogs:[...data.auditLogs,{id:uid('log'),action:'ubah status kunjungan',timestamp:new Date().toISOString(),details:`${visitId}->${status}`}]} ;saveAppData(n);set({data:n});}}));

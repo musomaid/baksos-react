@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom';import { AppShell } from '../components/AppShell';import { useAppStore } from '../stores/appStore';
+export default function PatientsPage(){const d=useAppStore(s=>s.data);return <AppShell title='Pasien'><Link to='/patients/new' className='block bg-blue-600 text-white p-3 rounded-xl text-center'>+ Tambah Pasien</Link>{d.patients.map(p=><div key={p.id} className='bg-white p-3 rounded-xl border'><Link to={`/patients/${p.id}`}>{p.name}</Link></div>)}</AppShell>}
